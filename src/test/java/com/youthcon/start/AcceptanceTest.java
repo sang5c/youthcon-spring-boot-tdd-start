@@ -1,5 +1,17 @@
 package com.youthcon.start;
 
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
+
 /*
 시나리오
 - 리뷰를 조회할 수 있게 해주세요.
@@ -17,5 +29,33 @@ package com.youthcon.start;
 - [ ] 선물하기에 성공하면 후기의 현재 상태를 응답합니다. (200 OK)
 - [ ] 선물하기는 아래의 API를 호출하여 수행합니다.
  */
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AcceptanceTest {
+
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
+    }
+
+    @DisplayName("후기 조회 성공")
+    @Test
+    void success() {
+        // given
+        given()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+        // when
+        .when()
+                .get("/reviews/1")
+        // then
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("id", equalTo(1))
+                .body("content", equalTo("재밌어요"))
+                .body("phoneNumber", equalTo("010-1111-2222"));
+    }
+
 }
