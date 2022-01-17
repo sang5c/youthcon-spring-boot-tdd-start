@@ -40,4 +40,15 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("phoneNumber").value(phoneNumber));
     }
 
+
+    @DisplayName("후기 조회 실패")
+    @Test
+    void fail() throws Exception {
+        given(reviewService.getById(1000L))
+                .willThrow(new ReviewNotFoundException("no review id: " + 1000));
+
+        ResultActions perform = mockMvc.perform(get("/reviews/" + 1000));
+
+        perform.andExpect(status().isNotFound());
+    }
 }

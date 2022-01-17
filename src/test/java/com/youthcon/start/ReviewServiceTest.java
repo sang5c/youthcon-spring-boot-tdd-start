@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -34,6 +35,19 @@ class ReviewServiceTest {
         assertThat(review.getId()).isEqualTo(id);
         assertThat(review.getContent()).isEqualTo(content);
         assertThat(review.getPhoneNumber()).isEqualTo(phoneNumber);
+    }
+
+    @DisplayName("후기 조회 실패")
+    @Test
+    void fail() {
+        // given
+        given(reviewRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        //when
+        //then
+        assertThatThrownBy(() -> reviewService.getById(1000))
+                .isInstanceOf(ReviewNotFoundException.class);
     }
 
 }

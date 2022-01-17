@@ -58,4 +58,17 @@ class AcceptanceTest {
                 .body("phoneNumber", equalTo("010-1111-2222"));
     }
 
+    @DisplayName("후기 조회 실패")
+    @Test
+    void fail() {
+        // given
+        given()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+        // when
+        .when()
+                .get("/reviews/1000")
+        // then
+        .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
 }
